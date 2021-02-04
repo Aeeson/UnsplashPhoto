@@ -10,18 +10,18 @@ import Alamofire
 
 class SearchViewController: UIViewController {
     
-    //MARK: Outlets
+//MARK: Outlets
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    //MARK: Variables
+//MARK: Variables
         var photosArray:[Photo] = []
         var selectedPhoto:Photo?
         var page = 1
         var totalPages = 1
         var searchTag = "random"
 
-    //MARK: Methods
+//MARK: Methods
     func fetchPhotos (page:Int = 1, searchTag: String, completion: @escaping (SearchResult) -> Void) {
         AF.request(API.searchUrl + "?page=\(page)" + "&query=\(searchTag)" + "&" + API.key).responseData { response in
             guard let photos = try? JSONDecoder().decode(SearchResult.self, from: response.data!) else {
@@ -47,6 +47,13 @@ class SearchViewController: UIViewController {
             view.endEditing(true)
         }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "searchSegue" else { return }
+        guard let destination = segue.destination as? DetailsViewController else { return }
+        destination.photo = self.selectedPhoto
+    }
+    
+//MARK: ViewDidLoad
         override func viewDidLoad() {
             super.viewDidLoad()
             searchBar.delegate = self
@@ -61,11 +68,6 @@ class SearchViewController: UIViewController {
             }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == "searchSegue" else { return }
-        guard let destination = segue.destination as? DetailsViewController else { return }
-        destination.photo = self.selectedPhoto
-    }
 }
 
 //MARK: Collection View extension
@@ -89,7 +91,6 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
             cell.likesLabel.text = "🤍 " + String(photosArray[indexPath.row].likes)
             return cell
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize

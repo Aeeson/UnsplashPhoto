@@ -9,5 +9,4 @@ import UIKit
 
 class LoadingCell: UICollectionViewCell {
     @IBOutlet weak var spinner: UIActivityIndicatorView!
-    
 }

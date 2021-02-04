@@ -9,13 +9,12 @@ import UIKit
 import Alamofire
 
 class CollectionDetailsViewController: UIViewController {
-    //MARK: Outlets
+    
+//MARK: Outlets
     @IBOutlet weak var collectionPhotosView: UICollectionView!
     @IBOutlet weak var collectionName: UILabel!
     
-    
-    
-    //MARK: Variables
+//MARK: Variables
         var photosArray:[Photo] = []
         var selectedPhoto:Photo?
         var link:String?
@@ -24,7 +23,7 @@ class CollectionDetailsViewController: UIViewController {
         var totalPages = 1
         var name:String?
 
-    //MARK: Methods
+//MARK: Methods
     func fetchPhotos (page: Int, completion: @escaping ([Photo]) -> Void) {
         AF.request(self.link! + "?page=\(page)" + "&" + API.key).responseData {
                 response in
@@ -35,6 +34,13 @@ class CollectionDetailsViewController: UIViewController {
             }
             }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "collectionPhotoDetailsSegue" else { return }
+        guard let destination = segue.destination as? DetailsViewController else { return }
+        destination.photo = self.selectedPhoto
+    }
+    
+//MARK: ViewDidLoad
         override func viewDidLoad() {
             super.viewDidLoad()
             collectionName.text = name
@@ -45,12 +51,6 @@ class CollectionDetailsViewController: UIViewController {
                 self.photosArray.append(contentsOf: photos)
                 self.collectionPhotosView.reloadData()
             }
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == "collectionPhotoDetailsSegue" else { return }
-        guard let destination = segue.destination as? DetailsViewController else { return }
-        destination.photo = self.selectedPhoto
     }
 }
 

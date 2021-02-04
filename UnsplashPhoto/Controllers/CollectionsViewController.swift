@@ -10,13 +10,11 @@ import Alamofire
 
 class CollectionsViewController: UIViewController {
     
-    //MARK: Outlets
+//MARK: Outlets
     @IBOutlet weak var collectionsCollectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    
-    
-    //MARK: Variables
+//MARK: Variables
         var collectionsArray:[Collection] = []
         var link: String?
         var page = 1
@@ -26,7 +24,7 @@ class CollectionsViewController: UIViewController {
         var secondFetch = false
         var name:String?
 
-    //MARK: Methods
+//MARK: Methods
     func fetchPhotos (page:Int = 1, searchTag: String, completion: @escaping (CollectionSearch) -> Void) {
         AF.request(API.collectionsUrl + "?page=\(page)" + "&query=\(searchTag)" + "&" + API.key).responseData {
                 response in
@@ -43,7 +41,7 @@ class CollectionsViewController: UIViewController {
             }
     
     func firstFetch (page:Int = 1, completion: @escaping ([Collection]) -> Void) {
-        AF.request("https://api.unsplash.com/collections?page=\(page)&" + API.key).responseData {
+        AF.request(API.collectionsFirstFetch + "?page=\(page)&" + API.key).responseData {
                 response in
             guard let collections = try? JSONDecoder().decode([Collection].self, from: response.data!) else { return }
             self.totalPages += 1
@@ -65,6 +63,15 @@ class CollectionsViewController: UIViewController {
             view.endEditing(true)
         }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "collectionDetailsSegue" else { return }
+        guard let destination = segue.destination as? CollectionDetailsViewController else { return }
+        destination.link = self.link
+        destination.totalPhotos = self.totalPhotos
+        destination.name = self.name
+    }
+
+//MARK: ViewDidLoad
         override func viewDidLoad() {
             super.viewDidLoad()
             searchBar.delegate = self
@@ -76,20 +83,10 @@ class CollectionsViewController: UIViewController {
                 self.collectionsArray.append(contentsOf: collections)
                 self.collectionsCollectionView.reloadData()
             }
-            
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == "collectionDetailsSegue" else { return }
-        guard let destination = segue.destination as? CollectionDetailsViewController else { return }
-        destination.link = self.link
-        destination.totalPhotos = self.totalPhotos
-        destination.name = self.name
     }
 }
 
 //MARK: Collection View extension
-
 extension CollectionsViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -143,11 +140,9 @@ extension CollectionsViewController: UICollectionViewDataSource, UICollectionVie
             
     }
 }
-    
 }
 
 //MARK: SearchBar extension
-
 extension CollectionsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if !searchBar.text!.isEmpty {
@@ -166,7 +161,6 @@ extension CollectionsViewController: UISearchBarDelegate {
 }
 
 //MARK: GestrureRecognize extension
-
 extension CollectionsViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             return true

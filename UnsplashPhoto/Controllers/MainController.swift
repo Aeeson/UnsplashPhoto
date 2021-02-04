@@ -19,7 +19,6 @@ class MainController: UIViewController {
     
 //MARK: Methods
     func fetchRandomPhoto (completion: @escaping (Photo) -> Void) {
-        
         AF.request(API.url + "random" + "?" + API.key).responseData {
             response in
             guard let randomPhotoData = try? JSONDecoder().decode(Photo.self, from: response.data!) else { return }
@@ -36,15 +35,12 @@ class MainController: UIViewController {
             destination.photo = randomPhoto
         }
 
-
-    
+//MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchRandomPhoto{ randomPhoto in
             self.randomPhoto = randomPhoto
             self.likesLabel.text = "❤️ " + String(randomPhoto.likes)
         }
-        
     }
-
 }

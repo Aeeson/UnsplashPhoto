@@ -8,13 +8,15 @@
 import UIKit
 
 class DetailsViewController: UIViewController {
+    
 //MARK: Outlets
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var authorNameLabel: UILabel!
     @IBOutlet weak var likesLabel: UILabel!
-    
+
+//MARK: Methods
     @IBAction func infoButtonClicked(_ sender: Any) {
         let alert = UIAlertController(title: "Info", message: "Size: \(self.photo!.height) x \(self.photo!.width)", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
@@ -32,7 +34,8 @@ class DetailsViewController: UIViewController {
     
 //MARK: Variables
     var photo:Photo?
-    
+
+//MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         if let photo = photo {
@@ -44,7 +47,5 @@ class DetailsViewController: UIViewController {
             avatarImageView.layer.cornerRadius = 25
             avatarImageView.clipsToBounds = true
         }
-
     }
-    
 }
