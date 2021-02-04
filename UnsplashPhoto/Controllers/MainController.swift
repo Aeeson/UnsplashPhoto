@@ -34,7 +34,14 @@ class MainController: UIViewController {
         }
     }
     
-        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    @IBAction func getNewPhoto(_ sender: Any) {
+        fetchRandomPhoto{ randomPhoto in
+            self.randomPhoto = randomPhoto
+            self.likesLabel.text = "❤️ " + String(randomPhoto.likes)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
             guard segue.identifier == "randomPhotoDetailsSegue" else { return }
             guard let destination = segue.destination as? DetailsViewController else { return }
             destination.photo = randomPhoto
