@@ -43,7 +43,7 @@ class DetailsViewController: UIViewController {
             descriptionLabel.text = photo.altDescription ?? "No description"
             likesLabel.text = "❤️ " + String(photo.likes)
             authorNameLabel.text = photo.user.username
-            avatarImageView.image = photo.fetchPhoto(photo.user.profileImage.small)
+            avatarImageView.image = photo.fetchPhoto(photo.user.profileImage.large)
             avatarImageView.layer.cornerRadius = 25
             avatarImageView.clipsToBounds = true
         }
