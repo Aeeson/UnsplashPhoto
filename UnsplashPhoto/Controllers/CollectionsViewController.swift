@@ -61,9 +61,17 @@ class CollectionsViewController: UIViewController {
             .lowercased() ?? nonLatin
     }
     
+    @objc func hideKeyboardOnSwipeDown() {
+            view.endEditing(true)
+        }
+    
         override func viewDidLoad() {
             super.viewDidLoad()
             searchBar.delegate = self
+            let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.hideKeyboardOnSwipeDown))
+                    swipeDown.delegate = self
+                    swipeDown.direction =  UISwipeGestureRecognizer.Direction.down
+                    self.collectionsCollectionView.addGestureRecognizer(swipeDown)
             firstFetch{ collections in
                 self.collectionsArray.append(contentsOf: collections)
                 self.collectionsCollectionView.reloadData()
@@ -155,4 +163,12 @@ extension CollectionsViewController: UISearchBarDelegate {
         }
     }
     
+}
+
+//MARK: GestrureRecognize extension
+
+extension CollectionsViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
+        }
 }

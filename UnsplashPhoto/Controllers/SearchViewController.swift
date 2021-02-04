@@ -9,11 +9,10 @@ import UIKit
 import Alamofire
 
 class SearchViewController: UIViewController {
+    
     //MARK: Outlets
     @IBOutlet weak var searchCollectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
-    
-    
     
     //MARK: Variables
         var photosArray:[Photo] = []
@@ -44,9 +43,17 @@ class SearchViewController: UIViewController {
             .lowercased() ?? nonLatin
     }
     
+    @objc func hideKeyboardOnSwipeDown() {
+            view.endEditing(true)
+        }
+    
         override func viewDidLoad() {
             super.viewDidLoad()
             searchBar.delegate = self
+            let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.hideKeyboardOnSwipeDown))
+                    swipeDown.delegate = self
+                    swipeDown.direction =  UISwipeGestureRecognizer.Direction.down
+                    self.searchCollectionView.addGestureRecognizer(swipeDown)
             fetchPhotos(page: 1, searchTag: searchTag) { photos in
                 self.photosArray.append(contentsOf: photos.results)
                 self.totalPages = photos.totalPages
@@ -124,4 +131,12 @@ extension SearchViewController: UISearchBarDelegate {
         }
     }
     
+}
+
+//MARK: GestrureRecognize extension
+
+extension SearchViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
+        }
 }
