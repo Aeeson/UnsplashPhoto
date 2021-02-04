@@ -29,6 +29,9 @@ class CollectionsViewController: UIViewController {
         AF.request(API.collectionsUrl + "?page=\(page)" + "&query=\(searchTag)" + "&" + API.key).responseData {
                 response in
                 guard let collections = try? JSONDecoder().decode(CollectionSearch.self, from: response.data!) else {
+                    let alert = UIAlertController(title: "Error", message: "No response from server", preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                     self.collectionsArray.removeAll()
                     self.collectionsCollectionView.reloadData()
                     return

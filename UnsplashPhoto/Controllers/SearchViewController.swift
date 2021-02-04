@@ -25,6 +25,9 @@ class SearchViewController: UIViewController {
     func fetchPhotos (page:Int = 1, searchTag: String, completion: @escaping (SearchResult) -> Void) {
         AF.request(API.searchUrl + "?page=\(page)" + "&query=\(searchTag)" + "&" + API.key).responseData { response in
             guard let photos = try? JSONDecoder().decode(SearchResult.self, from: response.data!) else {
+                let alert = UIAlertController(title: "Error", message: "No response from server", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
                 self.photosArray.removeAll()
                 self.searchCollectionView.reloadData()
                 return

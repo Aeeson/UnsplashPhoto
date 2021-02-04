@@ -21,7 +21,12 @@ class MainController: UIViewController {
     func fetchRandomPhoto (completion: @escaping (Photo) -> Void) {
         AF.request(API.url + "random" + "?" + API.key).responseData {
             response in
-            guard let randomPhotoData = try? JSONDecoder().decode(Photo.self, from: response.data!) else { return }
+            guard let randomPhotoData = try? JSONDecoder().decode(Photo.self, from: response.data!) else {
+                let alert = UIAlertController(title: "Error", message: "No response from server", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
             self.randomPhotoImageView.image = randomPhotoData.fetchPhoto(randomPhotoData.urls.small)
             DispatchQueue.main.async {
                 completion(randomPhotoData)

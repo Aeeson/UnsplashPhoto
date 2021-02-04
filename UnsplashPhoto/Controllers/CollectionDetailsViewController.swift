@@ -27,7 +27,12 @@ class CollectionDetailsViewController: UIViewController {
     func fetchPhotos (page: Int, completion: @escaping ([Photo]) -> Void) {
         AF.request(self.link! + "?page=\(page)" + "&" + API.key).responseData {
                 response in
-            guard let photos = try? JSONDecoder().decode([Photo].self, from: response.data!) else { return }
+            guard let photos = try? JSONDecoder().decode([Photo].self, from: response.data!) else {
+                let alert = UIAlertController(title: "Error", message: "No response from server", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
                 DispatchQueue.main.async {
                     completion(photos)
                 }
